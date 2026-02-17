@@ -13,7 +13,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* Fundo com imagem */
 .fundo {
     position: fixed;
     top: 0;
@@ -26,26 +25,22 @@ body {
     z-index: -1;
 }
 
-/* Card */
 .card {
     border-radius: 20px;
 }
 
-/* Resultado */
 .resultado {
     font-size: 1.2rem;
     font-weight: bold;
     color: #041b3eec;
 }
 
-/* Logo aumentada 30% */
 .logo {
     height: 100px;
     border-radius: 10px;
     box-shadow: 0 6px 15px rgba(10, 1, 59, 0.25);
 }
 
-/* Nome estilo sistema */
 .app-title {
     font-size: 2rem;
     font-weight: 100;
@@ -65,15 +60,14 @@ body {
 
 <div class="card shadow p-4 bg-white">
 
-<!-- Logo à esquerda + Nome Centralizado -->
 <div class="position-relative mb-4">
 
-    <img src="LOGO.png" alt="Logo Empresa"
-         class="logo position-absolute start-0 top-50 translate-middle-y">
+<img src="LOGO.png" alt="Logo Empresa"
+class="logo position-absolute start-0 top-50 translate-middle-y">
 
-    <div class="text-center">
-        <div class="app-title">AAP.conversor</div>
-    </div>
+<div class="text-center">
+<div class="app-title">AAP.Electroconversor</div>
+</div>
 
 </div>
 
@@ -81,42 +75,37 @@ body {
 
 <!-- Tipo de Cabo -->
 <div class="mb-3">
-<label class="form-label">Tipo de Cabo (ou peso por metro)</label>
-<input list="listaCabos" class="form-control" id="bitolaInput" 
-placeholder="Ex: 1.5 ou 0.018">
+<label class="form-label">Tipo de Cabo</label>
+<select class="form-select" id="tipoCabo">
+<option value="">Selecionar...</option>
+<option value="1.5">1.5 mm²</option>
+<option value="2.5">2.5 mm²</option>
+<option value="4">4 mm²</option>
+<option value="6">6 mm²</option>
+<option value="10">10 mm²</option>
+</select>
+</div>
 
-<datalist id="listaCabos">
-<option value="0.018">1.5</option>
-<option value="0.030">2.5</option>
-<option value="0.040">3.5</option>
-<option value="0.055">4.5</option>
-<option value="0.065">2.5/3</option>
-<option value="0.050">1.5/3</option>
-<option value="0.090">3.5/5</option>
-</datalist>
-
+<!-- Peso por metro -->
+<div class="mb-3">
+<label class="form-label">Peso por metro (kg)</label>
+<input type="number" step="0.0001" class="form-control" id="pesoManual">
 <small class="text-muted">
-Pode selecionar da lista ou inserir manualmente o peso por metro em kg.
+Preenchimento automático ao escolher bitola, mas pode alterar manualmente.
 </small>
 </div>
 
-<!-- Peso Manual -->
+<!-- Preço (opcional) -->
 <div class="mb-3">
-<label class="form-label">Peso por metro manual (kg) - opcional</label>
-<input type="number" class="form-control" id="pesoManual">
-</div>
-
-<!-- Preço -->
-<div class="mb-3">
-<label class="form-label">Preço por metro (€)</label>
-<input type="number" class="form-control" id="precoMetro">
+<label class="form-label">Preço por metro (€) - opcional</label>
+<input type="number" step="0.01" class="form-control" id="precoMetro">
 </div>
 
 <!-- Peso do pedaço -->
 <div class="mb-3">
-<label class="form-label">Peso a comprar</label>
+<label class="form-label">Peso por comprar</label>
 <div class="input-group">
-<input type="number" class="form-control" id="pesoPedaco">
+<input type="number" step="0.01" class="form-control" id="pesoPedaco">
 <select class="form-select" id="unidadePeso">
 <option value="kg">kg</option>
 <option value="g">g</option>
@@ -125,7 +114,6 @@ Pode selecionar da lista ou inserir manualmente o peso por metro em kg.
 </div>
 
 <div class="d-grid gap-2">
-<button class="btn btn-primary" onclick="calcular()">Calcular</button>
 <button class="btn btn-outline-secondary" onclick="limpar()">Limpar</button>
 </div>
 
@@ -142,45 +130,82 @@ Pode selecionar da lista ou inserir manualmente o peso por metro em kg.
 </div>
 
 <script>
+
+const cabos = {
+    "1.5": { peso: 0.019 },
+    "2.5": { peso: 0.0304 },
+    "4":   { peso: 0.044 },
+    "6":   { peso: 0.065 },
+    "10":  { peso: 0.1082 }
+};
+
+const tipoCabo = document.getElementById("tipoCabo");
+const pesoManual = document.getElementById("pesoManual");
+const precoMetro = document.getElementById("precoMetro");
+const pesoPedaco = document.getElementById("pesoPedaco");
+const unidadePeso = document.getElementById("unidadePeso");
+
+function preencherPeso() {
+    const tipo = tipoCabo.value;
+
+    if (cabos[tipo]) {
+        pesoManual.value = cabos[tipo].peso;
+    }
+
+    calcular();
+}
+
 function calcular() {
 
-let pesoLista = parseFloat(document.getElementById("bitolaInput").value);
-let pesoManual = parseFloat(document.getElementById("pesoManual").value);
-let precoMetro = parseFloat(document.getElementById("precoMetro").value);
-let pesoPedaco = parseFloat(document.getElementById("pesoPedaco").value);
-let unidade = document.getElementById("unidadePeso").value;
+    let pesoPorMetro = parseFloat(pesoManual.value);
+    let preco = parseFloat(precoMetro.value);
+    let peso = parseFloat(pesoPedaco.value);
+    let unidade = unidadePeso.value;
 
-// Prioridade: manual > lista
-let pesoPorMetro = pesoManual > 0 ? pesoManual : pesoLista;
+    if (!pesoPorMetro || pesoPorMetro <= 0 ||
+        !peso || peso <= 0) {
 
-// Converter g para kg
-if (unidade === "g") {
-    pesoPedaco = pesoPedaco / 1000;
-}
+        document.getElementById("resultadoMetros").innerHTML = "";
+        document.getElementById("resultadoPreco").innerHTML = "";
+        return;
+    }
 
-if (!pesoPorMetro || !precoMetro || !pesoPedaco) {
-    alert("Preencha todos os campos corretamente.");
-    return;
-}
+    if (unidade === "g") {
+        peso = peso / 1000;
+    }
 
-let metros = pesoPedaco / pesoPorMetro;
-let preco = metros * precoMetro;
+    let metros = peso / pesoPorMetro;
 
-document.getElementById("resultadoMetros").innerHTML =
-"Comprimento: " + metros.toFixed(2) + " metros";
+    document.getElementById("resultadoMetros").innerHTML =
+        "Comprimento: " + metros.toFixed(2) + " metros";
 
-document.getElementById("resultadoPreco").innerHTML =
-"Preço Total: € " + preco.toFixed(2);
+    if (preco && preco > 0) {
+        let total = metros * preco;
+        document.getElementById("resultadoPreco").innerHTML =
+            "Preço Total: € " + total.toFixed(2);
+    } else {
+        document.getElementById("resultadoPreco").innerHTML =
+            "Preço Total: Não inserido";
+    }
 }
 
 function limpar() {
-document.getElementById("bitolaInput").value = "";
-document.getElementById("pesoManual").value = "";
-document.getElementById("precoMetro").value = "";
-document.getElementById("pesoPedaco").value = "";
-document.getElementById("resultadoMetros").innerHTML = "";
-document.getElementById("resultadoPreco").innerHTML = "";
+    tipoCabo.value = "";
+    pesoManual.value = "";
+    precoMetro.value = "";
+    pesoPedaco.value = "";
+    unidadePeso.value = "kg";
+    document.getElementById("resultadoMetros").innerHTML = "";
+    document.getElementById("resultadoPreco").innerHTML = "";
 }
+
+/* Eventos automáticos */
+tipoCabo.addEventListener("change", preencherPeso);
+pesoManual.addEventListener("input", calcular);
+precoMetro.addEventListener("input", calcular);
+pesoPedaco.addEventListener("input", calcular);
+unidadePeso.addEventListener("change", calcular);
+
 </script>
 
 </body>
