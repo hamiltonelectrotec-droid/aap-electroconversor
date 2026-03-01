@@ -16,15 +16,10 @@
   --text:#374151;
   --muted:#6b7280;
 }
-
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-}
+body{ margin:0; font-family: Arial, sans-serif; }
 
 .fundo{
-  position:fixed;
-  top:0; left:0;
+  position:fixed; top:0; left:0;
   width:100%; height:100%;
   background:url("fundo.jpeg") no-repeat center center;
   background-size:cover;
@@ -33,10 +28,7 @@ body{
 }
 
 /* Layout */
-.container{
-  padding-top: 3.5rem;
-  padding-bottom: 3.5rem;
-}
+.container{ padding-top: 3.5rem; padding-bottom: 3.5rem; }
 
 /* Card flutuante */
 .app-card{
@@ -47,7 +39,6 @@ body{
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(6px);
 }
-
 @media (max-width: 576px){
   .app-card{ padding:18px; border-radius:18px; }
   .container{ padding-top: 2.5rem; padding-bottom: 2.5rem; }
@@ -60,9 +51,7 @@ body{
   box-shadow: 0 6px 15px rgba(10,1,59,.12);
   object-fit: cover;
 }
-@media (max-width: 576px){
-  .logo{ height: 62px; }
-}
+@media (max-width: 576px){ .logo{ height: 62px; } }
 
 .app-title{
   font-size: 1.55rem;
@@ -71,11 +60,7 @@ body{
   line-height:1.1;
 }
 
-.title-lines{
-  margin:8px auto 0;
-  max-width:210px;
-}
-
+.title-lines{ margin:8px auto 0; max-width:210px; }
 .title-lines div{
   height:3px;
   background:var(--line);
@@ -90,13 +75,11 @@ body{
   color:#4b5563;
   margin-bottom:.35rem;
 }
-
 .form-control, .form-select{
   border:1.5px solid var(--green);
   border-radius:12px;
   padding:10px 10px;
 }
-
 .form-control:focus, .form-select:focus{
   box-shadow:0 0 0 .15rem rgba(111,179,106,.2);
   border-color:var(--green2);
@@ -108,17 +91,12 @@ body{
   color:var(--text);
   min-height: 44px;
 }
-
 .alert-mini{
   font-size:.9rem;
   color:#b91c1c;
   font-weight:700;
 }
-
-.btn{
-  border-radius:12px;
-  font-weight:700;
-}
+.btn{ border-radius:12px; font-weight:700; }
 
 /* Botão Novo */
 .btn-novo{
@@ -145,13 +123,8 @@ body{
 }
 
 /* Modal/tabela */
-.table thead th{
-  color:#4b5563;
-  white-space: nowrap;
-}
-.table td{
-  vertical-align: middle;
-}
+.table thead th{ color:#4b5563; white-space: nowrap; }
+.table td{ vertical-align: middle; }
 .mono{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
 }
@@ -179,7 +152,6 @@ tr:hover .btn-copy-hover,
   opacity: 1;
   pointer-events: auto;
 }
-/* Mobile: sem hover => mostra sempre */
 @media (max-width: 576px){
   .btn-copy-hover{
     opacity: 1 !important;
@@ -198,7 +170,7 @@ tr:hover .btn-copy-hover,
 
       <div class="app-card">
 
-        <!-- Cabeçalho (responsivo) -->
+        <!-- Cabeçalho -->
         <div class="d-flex align-items-center gap-3 mb-3">
           <img src="LOGO.png" class="logo" alt="Logo">
           <div class="flex-grow-1 text-center">
@@ -241,7 +213,7 @@ tr:hover .btn-copy-hover,
           </div>
         </div>
 
-        <!-- Peso / Barcode -->
+        <!-- Peso/m + Barcode -->
         <div class="mb-3">
           <label class="form-label">Peso por metro</label>
           <div class="row g-2">
@@ -263,18 +235,24 @@ tr:hover .btn-copy-hover,
           <input type="number" step="0.01" class="form-control mt-2" id="precoMetro" placeholder="Preço opcional">
         </div>
 
-        <!-- Peso compra -->
+        <!-- Controlo de Pesagem -->
         <div class="mb-3">
-          <label class="form-label">Peso por comprar</label>
+          <label class="form-label">Controlo de Pesagem</label>
           <div class="row g-2">
             <div class="col-6">
-              <input type="number" step="0.01" class="form-control" id="pesoPedaco" placeholder="Peso">
+              <input type="number" step="0.01" class="form-control" id="pesoAntes" placeholder="PESO INICIAL">
+            </div>
+            <div class="col-6">
+              <input type="number" step="0.01" class="form-control" id="pesoDepois" placeholder="PESO RETORNADO (opcional)">
             </div>
             <div class="col-6">
               <select class="form-select" id="unidadePeso">
                 <option value="kg">Kg</option>
                 <option value="g" selected>g</option>
               </select>
+            </div>
+            <div class="col-6">
+              <input type="text" class="form-control" id="pesoUsadoView" placeholder="PESO UTILIZADO (automático)" disabled>
             </div>
           </div>
         </div>
@@ -331,7 +309,9 @@ tr:hover .btn-copy-hover,
                 <th>Bitola</th>
                 <th>Cor</th>
                 <th>Peso/m</th>
-                <th>Comprimento (m)</th>
+                <th>Peso utilizado</th>
+                <th>Metros (m)</th>
+                <th>Modo</th>
                 <th>Preço Total (€)</th>
                 <th>Barcode</th>
                 <th>Ações</th>
@@ -356,13 +336,7 @@ tr:hover .btn-copy-hover,
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* ===== DADOS =====
-   peso = KG por metro
-   Os novos (4/6/10) foram convertidos do rolo de 100m:
-   4mm: 4.40/100 = 0.044
-   6mm: 6.50/100 = 0.065
-   10mm: 10.82/100 = 0.1082
-*/
+/* ===== DADOS ===== */
 const cabos = {
   "1.5":{
     "Castanho":{peso:0.019,preco:0.300,barcode:"0607001915100"},
@@ -377,8 +351,6 @@ const cabos = {
     "Azul":{peso:0.0304,preco:0.480,barcode:"0607001920051"},
     "Amarelo/Verde":{peso:0.0304,preco:0.480,barcode:"0607001920054"}
   },
-
-  /* ===== ADICIONADO: 4 mm² ===== */
   "4":{
     "Cinza":{peso:0.0440,preco:0.840,barcode:"0607001920059"},
     "Azul":{peso:0.0440,preco:0.840,barcode:"0607001920056"},
@@ -387,8 +359,6 @@ const cabos = {
     "Amarelo/Verde":{peso:0.0440,preco:0.840,barcode:"0607001920055"},
     "Preto":{peso:0.0440,preco:0.840,barcode:"0607001920057"}
   },
-
-  /* ===== ADICIONADO: 6 mm² ===== */
   "6":{
     "Cinza":{peso:0.0650,preco:1.210,barcode:"000033"},
     "Azul":{peso:0.0650,preco:1.210,barcode:"0607001920062"},
@@ -397,15 +367,13 @@ const cabos = {
     "Amarelo/Verde":{peso:0.0650,preco:1.210,barcode:"0607001920061"},
     "Preto":{peso:0.0650,preco:1.210,barcode:"0607001920060"}
   },
-
-  /* ===== ADICIONADO: 10 mm² ===== */
   "10":{
     "Verde/Amarelo":{peso:0.1082,preco:1.770,barcode:"0607001920065"},
     "Amarelo/Verde":{peso:0.1082,preco:1.770,barcode:"0607001920065"}
   }
 };
 
-const STORAGE_KEY="aap_registos_v2";
+const STORAGE_KEY="aap_registos_v4_modo_duplo";
 
 /* ===== ELEMENTOS ===== */
 const bitola = document.getElementById("bitola");
@@ -413,8 +381,11 @@ const cor = document.getElementById("cor");
 const pesoPorMetro = document.getElementById("pesoPorMetro");
 const barcode = document.getElementById("barcode");
 const precoMetro = document.getElementById("precoMetro");
-const pesoPedaco = document.getElementById("pesoPedaco");
+
+const pesoAntes = document.getElementById("pesoAntes");
+const pesoDepois = document.getElementById("pesoDepois");
 const unidadePeso = document.getElementById("unidadePeso");
+const pesoUsadoView = document.getElementById("pesoUsadoView");
 
 const resultadoMetros = document.getElementById("resultadoMetros");
 const resultadoPreco = document.getElementById("resultadoPreco");
@@ -423,6 +394,7 @@ const msgErro = document.getElementById("msgErro");
 const btnNovo = document.getElementById("btnNovo");
 const btnConsultar = document.getElementById("btnConsultar");
 
+/* ===== HELPERS ===== */
 function showErro(txt){
   if(!txt){
     msgErro.style.display="none";
@@ -432,77 +404,118 @@ function showErro(txt){
   msgErro.style.display="block";
   msgErro.textContent=txt;
 }
-
+function num(v){
+  const n = Number(v);
+  return isFinite(n) ? n : null;
+}
 function toKg(value, unidade){
   const n = Number(value);
   if(!isFinite(n)) return null;
   return unidade === "g" ? (n/1000) : n;
 }
-
-function num(v){
-  const n = Number(v);
-  return isFinite(n) ? n : null;
-}
-
 function round2(n){ return (Math.round(n*100)/100).toFixed(2); }
 function round4(n){ return (Math.round(n*10000)/10000).toFixed(4); }
 
-/* ===== AUTO-PREENCHER (BITOLA+COR) =====
-   Preenche automaticamente SEM remover nada: quando existir no dicionário, overwrite peso/preço/barcode.
-*/
+function formatPesoUsado(kg){
+  if(kg === null) return "";
+  const u = unidadePeso.value;
+  if(u === "g") return `${Math.round(kg*1000)} g`;
+  return `${round4(kg)} kg`;
+}
+
+/* ===== AUTO-PREENCHER (BITOLA+COR) ===== */
 function preencherAuto(){
+  if(!bitola.value || !cor.value){
+    calcular();
+    return;
+  }
   if(cabos[bitola.value] && cabos[bitola.value][cor.value]){
     const item = cabos[bitola.value][cor.value];
     pesoPorMetro.value = item.peso;
-    precoMetro.value   = item.preco;
-    barcode.value      = item.barcode;
+    barcode.value      = item.barcode || "";
+    // preço opcional: só preenche se estiver vazio
+    if(!precoMetro.value) precoMetro.value = (item.preco ?? "");
   }
   calcular();
 }
 
-/* ===== CÁLCULO ===== */
+/* ===== CÁLCULO (MODO DUPLO) ===== */
 function calcular(){
   showErro("");
 
-  const ppm = num(pesoPorMetro.value);         // kg por metro
-  const peso = toKg(pesoPedaco.value, unidadePeso.value);
-  const preco = num(precoMetro.value);         // €/m (opcional)
+  const ppm = num(pesoPorMetro.value); // kg por metro
+  const antesRaw = String(pesoAntes.value ?? "").trim();
+  const depoisRaw = String(pesoDepois.value ?? "").trim();
 
-  if(!ppm || !peso){
+  const antesKg = antesRaw ? toKg(antesRaw, unidadePeso.value) : null;
+  const depoisKg = depoisRaw ? toKg(depoisRaw, unidadePeso.value) : null;
+
+  const preco = num(precoMetro.value); // €/m (opcional)
+
+  // precisa pelo menos de ppm + peso inicial
+  if(!ppm || antesKg === null){
+    pesoUsadoView.value = "";
     resultadoMetros.textContent="";
     resultadoPreco.textContent="";
     return null;
   }
 
-  if(ppm <= 0 || peso <= 0){
+  if(ppm <= 0 || antesKg <= 0){
+    pesoUsadoView.value = "";
     resultadoMetros.textContent="";
     resultadoPreco.textContent="";
-    showErro("Valores inválidos. Verifique Peso por metro e Peso por comprar.");
+    showErro("Valores inválidos. Verifique Peso por metro e PESO INICIAL.");
     return null;
   }
 
-  const metros = peso / ppm;
-  resultadoMetros.textContent = "Comprimento: " + round2(metros) + " m";
+  let usadoKg = null;
+  let modo = "";
+
+  // Com PESO RETORNADO -> usado = inicial - retornado
+  if(depoisKg !== null && depoisRaw !== ""){
+    if(depoisKg < 0){
+      showErro("PESO RETORNADO inválido.");
+      return null;
+    }
+
+    usadoKg = antesKg - depoisKg;
+
+    if(usadoKg <= 0){
+      pesoUsadoView.value = "";
+      resultadoMetros.textContent="";
+      resultadoPreco.textContent="";
+      showErro("O PESO RETORNADO não pode ser maior ou igual ao PESO INICIAL.");
+      return null;
+    }
+
+    modo = "INICIAL - RETORNADO";
+  }
+  // Sem PESO RETORNADO -> assume que o peso inicial é o peso do pedaço
+  else {
+    usadoKg = antesKg;
+    modo = "PESO INICIAL";
+  }
+
+  pesoUsadoView.value = formatPesoUsado(usadoKg);
+
+  const metros = usadoKg / ppm;
+  resultadoMetros.textContent = `Comprimento: ${round2(metros)} m (${modo})`;
 
   if(preco){
     const total = metros * preco;
     resultadoPreco.textContent = "Preço total: € " + round2(total);
-    return { metros, total, ppm };
+    return { metros, total, ppm, usadoKg, antesKg, depoisKg, modo };
   }else{
     resultadoPreco.textContent = "Preço total: Não inserido";
-    return { metros, total: null, ppm };
+    return { metros, total: null, ppm, usadoKg, antesKg, depoisKg, modo };
   }
 }
 
 /* ===== STORAGE ===== */
 function lerRegistos(){
-  try{
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  }catch(e){
-    return [];
-  }
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch(e){ return []; }
 }
-
 function guardarRegistos(lista){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
 }
@@ -518,9 +531,16 @@ function novoRegistro(){
     bitola: bitola.value,
     cor: cor.value,
     ppm: r.ppm,
-    comprimento: Number(r.metros.toFixed(2)),
+
+    pesoInicialKg: Number(r.antesKg.toFixed(4)),
+    pesoRetornadoKg: (r.depoisKg === null ? null : Number(r.depoisKg.toFixed(4))),
+    pesoUtilizadoKg: Number(r.usadoKg.toFixed(4)),
+
+    metros: Number(r.metros.toFixed(2)),
+    modo: r.modo,
+
     precoTotal: r.total ? Number(r.total.toFixed(2)) : null,
-    barcode: barcode.value
+    barcode: barcode.value || ""
   });
 
   guardarRegistos(lista);
@@ -533,23 +553,22 @@ function limparCampos(){
   pesoPorMetro.value="";
   barcode.value="";
   precoMetro.value="";
-  pesoPedaco.value="";
+  pesoAntes.value="";
+  pesoDepois.value="";
   unidadePeso.value="g";
+  pesoUsadoView.value="";
   resultadoMetros.textContent="";
   resultadoPreco.textContent="";
+  showErro("");
 }
 
 /* ===== COPIAR BARCODE ===== */
 function copiarTexto(txt){
   if(!txt) return;
-
-  // navigator.clipboard (moderno)
   if(navigator.clipboard && window.isSecureContext){
     navigator.clipboard.writeText(txt).catch(()=>{});
     return;
   }
-
-  // fallback
   const ta = document.createElement("textarea");
   ta.value = txt;
   ta.style.position = "fixed";
@@ -573,15 +592,20 @@ function formatPreco(v){
   return (v===null) ? "Não inserido" : v.toFixed(2);
 }
 
+function formatPesoColuna(kg){
+  if(kg === null || kg === undefined) return "-";
+  if(kg < 1) return `${Math.round(kg*1000)} g`;
+  return `${kg.toFixed(3)} kg`;
+}
+
 function filtrarOrdenar(lista){
   const q = (document.getElementById("pesquisa").value || "").trim().toLowerCase();
   const ord = document.getElementById("ordenacao").value;
-
   let out = [...lista];
 
   if(q){
     out = out.filter(r=>{
-      const s = `${r.bitola} ${r.cor} ${r.barcode||""}`.toLowerCase();
+      const s = `${r.bitola} ${r.cor} ${r.barcode||""} ${r.modo||""}`.toLowerCase();
       return s.includes(q);
     });
   }
@@ -609,7 +633,7 @@ function renderTabela(){
   if(!vis.length){
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" class="text-center text-muted py-4">
+        <td colspan="10" class="text-center text-muted py-4">
           Sem registos ainda. Faça um cálculo e clique em <b>Novo</b>.
         </td>
       </tr>
@@ -618,10 +642,7 @@ function renderTabela(){
   }
 
   tbody.innerHTML = vis.map((r,i)=>{
-    const bc = r.barcode ? r.barcode : "-";
     const temBC = !!r.barcode;
-
-    // protege aspas simples no onclick
     const safeBC = temBC ? String(r.barcode).replace(/'/g, "\\'") : "";
 
     return `
@@ -630,14 +651,16 @@ function renderTabela(){
         <td>${r.bitola} mm²</td>
         <td>${r.cor}</td>
         <td>${round4(r.ppm)}</td>
-        <td>${Number(r.comprimento).toFixed(2)}</td>
+        <td>${formatPesoColuna(r.pesoUtilizadoKg)}</td>
+        <td>${Number(r.metros).toFixed(2)}</td>
+        <td>${r.modo || "-"}</td>
         <td>${formatPreco(r.precoTotal)}</td>
         <td class="mono">
           ${
             temBC
             ? `
               <span class="barcode-cell">
-                <span>${bc}</span>
+                <span>${r.barcode}</span>
                 <button class="btn btn-outline-secondary btn-sm btn-copy-hover"
                         type="button"
                         onclick="copiarTexto('${safeBC}')">
@@ -673,9 +696,12 @@ function apagarTudo(){
 /* ===== EVENTOS ===== */
 bitola.addEventListener("change", preencherAuto);
 cor.addEventListener("change", preencherAuto);
+
 pesoPorMetro.addEventListener("input", calcular);
 precoMetro.addEventListener("input", calcular);
-pesoPedaco.addEventListener("input", calcular);
+
+pesoAntes.addEventListener("input", calcular);
+pesoDepois.addEventListener("input", calcular);
 unidadePeso.addEventListener("change", calcular);
 
 btnNovo.addEventListener("click", novoRegistro);
